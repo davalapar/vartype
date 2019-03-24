@@ -48,11 +48,11 @@ Classify JS types with precision.
 ## Usage
 
 ```sh
-yarn add vartype
+yarn add @davalapar/vartype
 ```
 
 ```js
-const { vartype, vartypeof } = require('vartype');
+const { vartype, vartypeof } = require('@davalapar/vartype');
 
 vartype(true); // 'boolean'
 vartype(''); // 'string'

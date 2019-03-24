@@ -1,5 +1,5 @@
 {
-  "name": "vartype",
+  "name": "@davalapar/vartype",
   "version": "2.0.0",
   "description": "Classify JS types with precision.",
   "main": "index.js",
