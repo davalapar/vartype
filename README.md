@@ -74,6 +74,7 @@ class User {
     this.name = name;
   }
 }
+vartype(User); // 'function', transpiler-safe
 const alice = new User('alice');
 vartype(alice); // 'user'
 
@@ -83,6 +84,10 @@ vartypeof(1, 'integer', 'float', 'double'); // true
 vartypeof(1.4, 'integer', 'float', 'double'); // true
 vartypeof(1.5, 'integer', 'float', 'double'); // true
 ```
+
+## Usage notes
+
+- If using minifier like Terser, use `--keep-classnames`
 
 ## How does it work?
 
@@ -121,14 +126,25 @@ const vartype = (value) => {
       return 'symbol';
     case 'bigint':
       return 'bigint';
-    case 'object':
+    case 'object': {
       if (value === null) return 'null';
-      if (typeof value.constructor === 'function') {
-        if (typeof value.constructor.name === 'string') {
-          return value.constructor.name.toLowerCase();
+
+      const prototype = Object.getPrototypeOf(value);
+
+      // Because: Object.getPrototypeOf(Object.create(null)); === null
+      // https://github.com/lodash/lodash/blob/master/isPlainObject.js
+      if (prototype === null) {
+        return 'object';
+      }
+
+      if (typeof prototype.constructor === 'function') {
+        if (typeof prototype.constructor.name === 'string') {
+          return prototype.constructor.name.toLowerCase();
         }
       }
+
       return 'unknown';
+    }
     default:
       return 'unknown';
   }

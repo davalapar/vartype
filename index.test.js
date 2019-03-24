@@ -103,10 +103,19 @@ test('uint8array', () => {
   expect(vartype(new Uint8Array())).toBe('uint8array');
 });
 
-test('user (Class-based)', () => {
+test('user (Class-itself)', () => {
+  class User {}
+  expect(vartype(User)).toBe('function');
+});
+
+test('user (Class-instance)', () => {
   class User {}
   const alice = new User();
   expect(vartype(alice)).toBe('user');
+});
+
+test('plain object with constructor property', () => {
+  expect(vartype({ constructor: null })).toBe('object');
 });
 
 test('vartypeof', () => {

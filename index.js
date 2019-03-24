@@ -28,14 +28,24 @@ const vartype = (value) => {
       return 'symbol';
     case 'bigint':
       return 'bigint';
-    case 'object':
+    case 'object': {
       if (value === null) return 'null';
-      if (typeof value.constructor === 'function') {
-        if (typeof value.constructor.name === 'string') {
-          return value.constructor.name.toLowerCase();
+
+      const prototype = Object.getPrototypeOf(value);
+
+      // Because: Object.getPrototypeOf(Object.create(null)); === null
+      if (prototype === null) {
+        return 'object';
+      }
+
+      if (typeof prototype.constructor === 'function') {
+        if (typeof prototype.constructor.name === 'string') {
+          return prototype.constructor.name.toLowerCase();
         }
       }
+
       return 'unknown';
+    }
     default:
       return 'unknown';
   }
