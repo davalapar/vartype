@@ -1,7 +1,7 @@
 {
   "name": "vartype",
-  "version": "1.0.0",
-  "description": "yeah",
+  "version": "2.0.0",
+  "description": "Classify JS types with precision.",
   "main": "index.js",
   "author": "davalapar <davalapar@gmail.com>",
   "license": "MIT",

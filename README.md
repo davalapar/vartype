@@ -52,7 +52,7 @@ yarn add vartype
 ```
 
 ```js
-const vartype = require('vartype');
+const { vartype, vartypeof } = require('vartype');
 
 vartype(true); // 'boolean'
 vartype(''); // 'string'
@@ -76,6 +76,12 @@ class User {
 }
 const alice = new User('alice');
 vartype(alice); // 'user'
+
+vartypeof('a', 'string'); // true
+vartypeof('a', 'integer', 'float', 'double'); // false
+vartypeof(1, 'integer', 'float', 'double'); // true
+vartypeof(1.4, 'integer', 'float', 'double'); // true
+vartypeof(1.5, 'integer', 'float', 'double'); // true
 ```
 
 ## How does it work?
@@ -128,7 +134,16 @@ const vartype = (value) => {
   }
 };
 
-module.exports = vartype;
+const vartypeof = (value, ...types) => {
+  for (let i = 0, l = types.length; i < l; i += 1) {
+    if (typeof types[i] !== 'string') {
+      throw TypeError(`vartypeof(value, ...types) : index "${i}" at "...types" must be a "string", received "${vartype(types[i])}"`);
+    }
+  }
+  return types.includes(vartype(value));
+};
+
+module.exports = { vartype, vartypeof };
 ```
 
 ## Testing

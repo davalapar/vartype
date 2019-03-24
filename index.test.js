@@ -1,5 +1,5 @@
 
-const vartype = require('./index');
+const { vartype, vartypeof } = require('./index');
 
 test('undefined', () => {
   expect(vartype(undefined)).toBe('undefined');
@@ -107,4 +107,13 @@ test('user (Class-based)', () => {
   class User {}
   const alice = new User();
   expect(vartype(alice)).toBe('user');
+});
+
+test('vartypeof', () => {
+  expect(vartypeof(1.4, 'string')).toBe(false);
+  expect(vartypeof(1.4, 'integer', 'float', 'double')).toBe(true);
+  expect(vartypeof(null, 'null')).toBe(true);
+});
+test('vartypeof error', () => {
+  expect(() => vartypeof(null, 1)).toThrow();
 });

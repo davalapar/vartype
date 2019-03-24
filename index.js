@@ -41,4 +41,13 @@ const vartype = (value) => {
   }
 };
 
-module.exports = vartype;
+const vartypeof = (value, ...types) => {
+  for (let i = 0, l = types.length; i < l; i += 1) {
+    if (typeof types[i] !== 'string') {
+      throw TypeError(`vartypeof(value, ...types) : index "${i}" at "...types" must be a "string", received "${vartype(types[i])}"`);
+    }
+  }
+  return types.includes(vartype(value));
+};
+
+module.exports = { vartype, vartypeof };
