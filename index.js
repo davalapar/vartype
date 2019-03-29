@@ -29,21 +29,19 @@ const vartype = (value) => {
     case 'bigint':
       return 'bigint';
     case 'object': {
-      if (value === null) return 'null';
-
+      if (value === null) {
+        return 'null';
+      }
       const prototype = value.__proto__ || Object.getPrototypeOf(value);
-
       // Because: Object.getPrototypeOf(Object.create(null)); === null
       if (prototype === null) {
         return 'object';
       }
-
       if (typeof prototype.constructor === 'function') {
         if (typeof prototype.constructor.name === 'string') {
           return prototype.constructor.name.toLowerCase();
         }
       }
-
       return 'unknown';
     }
     default:

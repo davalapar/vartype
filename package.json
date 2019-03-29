@@ -1,6 +1,6 @@
 {
   "name": "@davalapar/vartype",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Classify JS types with precision.",
   "main": "index.js",
   "author": "davalapar <davalapar@gmail.com>",
