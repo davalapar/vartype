@@ -6,6 +6,14 @@ const vartype = (value) => {
       return 'boolean';
     case 'string':
       return 'string';
+    case 'undefined':
+      return 'undefined';
+    case 'function':
+      return 'function';
+    case 'symbol':
+      return 'symbol';
+    case 'bigint':
+      return 'bigint';
     case 'number':
       if (Number.isNaN(value) === true) {
         return 'nan';
@@ -20,27 +28,19 @@ const vartype = (value) => {
         return 'float';
       }
       return 'double';
-    case 'undefined':
-      return 'undefined';
-    case 'function':
-      return 'function';
-    case 'symbol':
-      return 'symbol';
-    case 'bigint':
-      return 'bigint';
     case 'object': {
+      // Notes: typeof null is 'object'.
       if (value === null) {
         return 'null';
       }
+      // Notes: [[Object]].__proto__ is deprecated, but it is fast.
       const prototype = value.__proto__ || Object.getPrototypeOf(value);
-      // Because: Object.getPrototypeOf(Object.create(null)); === null
+      // Notes: Object.create(null) results to an object with null prototype.
       if (prototype === null) {
         return 'object';
       }
-      if (typeof prototype.constructor === 'function') {
-        if (typeof prototype.constructor.name === 'string') {
-          return prototype.constructor.name.toLowerCase();
-        }
+      if (typeof prototype.constructor === 'function' && typeof prototype.constructor.name === 'string') {
+        return prototype.constructor.name.toLowerCase();
       }
       return 'unknown';
     }
