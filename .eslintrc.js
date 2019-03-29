@@ -13,5 +13,6 @@ module.exports = {
   },
   "rules": {
     "max-len": 0,
+    "no-proto": 0,
   }
 };

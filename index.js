@@ -31,7 +31,7 @@ const vartype = (value) => {
     case 'object': {
       if (value === null) return 'null';
 
-      const prototype = Object.getPrototypeOf(value);
+      const prototype = value.__proto__ || Object.getPrototypeOf(value);
 
       // Because: Object.getPrototypeOf(Object.create(null)); === null
       if (prototype === null) {
