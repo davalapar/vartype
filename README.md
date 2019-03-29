@@ -88,7 +88,7 @@ vartypeof(1.5, 'integer', 'float', 'double'); // true
 ## Usage notes
 
 - If using minifier like Terser, use `--keep-classnames`
-- Classes have transpiler-safe type of `'function'`, 
+- Classes have transpiler-safe type of `'function'`
 
 ## How does it work?
 
