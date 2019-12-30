@@ -1,169 +1,52 @@
 
-# vartype
+## vartype
 
-Classify JS types with precision.
-
-## Overview
-
-- Intended for node & modern browsers
-- Designed as an alternative for `typeof`
-- Consistently returns lower-case strings
-- For native data types / structures:
-  - `'undefined'`
-  - `'boolean'`
-  - `'string'`
-  - `'symbol'`
-  - `'bigint'`
-  - `'function'`
-  - `'array'`
-  - `'object'`
-- For numbers:
-  - `'nan'`
-  - `'infinity'`
-  - `'integer'`
-  - `'float'`
-  - `'double'`
-- For errors:
-  - `'error'`
-  - `'evalerror'`
-  - `'internalerror'`
-  - `'rangeerror'`
-  - `'referenceerror'`
-  - `'syntaxerror'`
-  - `'typeerror'`
-  - `'urierror'`
-- For typed-arrays:
-  - `'int8array'`
-  - `'int16array'`
-  - `'int32array'`
-  - `'uint8array'`
-  - `'uint8clampedarray'`
-  - `'uint16array'`
-  - `'uint32array'`
-  - `'float32array'`
-  - `'float64array'`
-- For class-based objects:
-  - ie. `'user'` for `class User {}`
-
-## Usage
+classify variable types with precision
 
 ```sh
 yarn add @davalapar/vartype
 ```
 
 ```js
-const { vartype, vartypeof } = require('@davalapar/vartype');
-
-vartype(true); // 'boolean'
-vartype(''); // 'string'
-vartype(5); // 'integer'
-vartype(1.5); // 'float'
-vartype(1.4); // 'double'
-vartype([]); // 'array'
-vartype({}); // 'object'
-vartype(() => {}); // 'function'
-
-vartype(/asd/); // 'regexp'
-vartype(new Promise(resolve => resolve())); // 'promise'
-vartype(new Error('test')); // 'error'
-vartype(new RangeError('test')); // 'rangerror'
-vartype(new Uint8Array(1)); // 'uint8array'
-
-class User {
-  constructor(name) {
-    this.name = name;
-  }
-}
-vartype(User); // 'function'
-const alice = new User('alice');
-vartype(alice); // 'user'
-
-vartypeof('a', 'string'); // true
-vartypeof('a', 'integer', 'float', 'double'); // false
-vartypeof(1, 'integer', 'float', 'double'); // true
-vartypeof(1.4, 'integer', 'float', 'double'); // true
-vartypeof(1.5, 'integer', 'float', 'double'); // true
+const vartype = require('@davalapar/vartype');
 ```
 
-## Usage notes
+```
+vartype(value <Any>, strict? <Boolean>) : <String>
+```
 
-- If using minifier like Terser, use `--keep-classnames`
-- Classes have transpiler-safe type of `'function'`
-
-## How does it work?
-
-Short and sweet, since we're targeting modern environments.
-
-Here's our actual source code:
+#### Loose mode (default)
 
 ```js
-// index.js
-
-const vartype = (value) => {
-  switch (typeof value) {
-    case 'boolean':
-      return 'boolean';
-    case 'string':
-      return 'string';
-    case 'undefined':
-      return 'undefined';
-    case 'function':
-      return 'function';
-    case 'symbol':
-      return 'symbol';
-    case 'bigint':
-      return 'bigint';
-    case 'number':
-      if (Number.isNaN(value) === true) {
-        return 'nan';
-      }
-      if (Number.isFinite(value) === false) {
-        return 'infinity';
-      }
-      if (Math.floor(value) === value) {
-        return 'integer';
-      }
-      if (Math.fround(value) === value) {
-        return 'float';
-      }
-      return 'double';
-    case 'object': {
-      // Notes: typeof null is 'object'.
-      if (value === null) {
-        return 'null';
-      }
-      // Notes: [[Object]].__proto__ is deprecated, but it is fast.
-      const prototype = value.__proto__ || Object.getPrototypeOf(value);
-      // Notes: Object.create(null) results to an object with null prototype.
-      if (prototype === null) {
-        return 'object';
-      }
-      if (typeof prototype.constructor === 'function' && typeof prototype.constructor.name === 'string') {
-        return prototype.constructor.name.toLowerCase();
-      }
-      return 'unknown';
-    }
-    default:
-      return 'unknown';
-  }
-};
-
-const vartypeof = (value, ...types) => {
-  for (let i = 0, l = types.length; i < l; i += 1) {
-    if (typeof types[i] !== 'string') {
-      throw TypeError(`vartypeof(value, ...types) : index "${i}" at "...types" must be a "string", received "${vartype(types[i])}"`);
-    }
-  }
-  return types.includes(vartype(value));
-};
-
-module.exports = { vartype, vartypeof };
+vartype(value);
 ```
 
-## Testing
+- `null`, `array`, `object`
+- `number`, `nan`, `infinity`
+- `undefined`, `boolean`, `string`, `bigint`, `symbol`, `function`
 
-```sh
-yarn run jest
+#### Strict mode
+
+```js
+vartype(value, true);
 ```
+
+- everything in loose mode, plus:
+  - `integer`, `float`, `double`
+  - `error`, `date`, `regexp`
+  - `map`, `set`, `weakmap`, `weakset`
+  - `dataview`, `arraybuffer`, `sharedarraybuffer`
+- including typed arrays
+  - `int8array`, `uint8array`, `uint8clampedarray`
+  - `int16array`, `uint16array`, `int32array`, `uint32array`
+  - `float32array`, `float64array`, `bigint64array`, `biguint64array`
+
+#### References
+
+- https://caniuse.com/#search=isInteger
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString#Using_toString_to_detect_object_class
+- http://www.ecma-international.org/ecma-262/7.0/index.html#sec-object.prototype.tostring
+
+#### License
 
 MIT | @davalapar
