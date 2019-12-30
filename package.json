@@ -1,7 +1,7 @@
 {
   "name": "@davalapar/vartype",
   "version": "5.0.0",
-  "description": "Classify JS types with precision.",
+  "description": "classify variable types with precision",
   "main": "index.js",
   "author": "davalapar <davalapar@gmail.com>",
   "license": "MIT",
