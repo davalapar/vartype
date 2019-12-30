@@ -35,7 +35,7 @@ const vartype = (value, strict) => {
       if (Array.isArray(value) === true) {
         return 'array';
       }
-      return 'object';
+      return type;
     }
     case 'number':
       if (Number.isNaN(value) === true) {
